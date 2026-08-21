@@ -51,7 +51,7 @@ form.addEventListener('submit', async (e) => {
     const data = await response.json();
     localStorage.setItem('kabithuu_token', data.token);
     localStorage.setItem('kabithuu_user', JSON.stringify(data.user));
-    window.location.href = 'dashboard.html';
+    window.location.href = '/dashboard';
   } catch (err) {
     showError(err.message || 'Something went wrong. Please try again.');
   } finally {
