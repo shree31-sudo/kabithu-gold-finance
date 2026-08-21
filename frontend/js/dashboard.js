@@ -23,7 +23,7 @@
   }
   function endSession(message) {
     clearSession();
-    window.location.href = 'index.html' + (message ? ('?msg=' + encodeURIComponent(message)) : '');
+    window.location.href = '/'; + (message ? ('?msg=' + encodeURIComponent(message)) : '');
   }
 
   if (TOKEN && SESSION) {
@@ -117,7 +117,7 @@
   }
 
   if (!TOKEN || !SESSION) {
-    window.location.href = 'index.html';
+    window.location.href = '/';
     return;
   }
 
