@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kabithu Gold Finance</title>
+<style>
+/* =========================================================
+   Pawn Shop ERP — Login (split layout: illustration + form)
+   Light theme with brass/gold accents, tying back to the
+   pawnbroker's ledger and jewelry-counter world.
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-page: #eef1f6;
+  --blob-1: #dfe6ee;
+  --blob-2: #f3e8d3;
+  --panel-white: #ffffff;
+  --illu-bg-a: #faedd2;
+  --illu-bg-b: #f3d9a4;
+  --ink: #221d14;
+  --muted: #8a8272;
+  --line: #e7e1d4;
+  --field-bg: #f6f3ec;
+  --brass: #c89b3c;
+  --brass-bright: #e3b756;
+  --brass-dim: #8c6e28;
+  --maroon: #7c2a28;
+  --error: #b23a2e;
+  --error-bg: #fbeae8;
+  --focus-ring: rgba(200, 155, 60, 0.28);
+  --radius: 10px;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: var(--ink);
+  background: var(--bg-page);
+  min-height: 100%;
+  position: relative;
+}
+
+/* ---------- Soft background blobs ---------- */
+.bg-blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(2px);
+  pointer-events: none;
+  z-index: 0;
+}
+.blob-1 {
+  width: 900px; height: 900px;
+  top: -420px; left: -280px;
+  background: radial-gradient(circle, var(--blob-1), transparent 70%);
+}
+.blob-2 {
+  width: 700px; height: 700px;
+  bottom: -380px; right: -220px;
+  background: radial-gradient(circle, var(--blob-2), transparent 70%);
+}
+
+/* ---------- Page shell ---------- */
+.page {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 20px;
+  overflow-x: hidden;
+}
+
+.brandline {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 26px;
+}
+.brandline-badge { width: 38px; height: 38px; flex-shrink: 0; }
+.brandline-word {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+.brandline-word strong {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 17px;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+}
+.brandline-word em {
+  font-style: normal;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--brass-dim);
+  margin-top: 2px;
+}
+
+/* ---------- Split card ---------- */
+.login-shell {
+  width: 100%;
+  max-width: 900px;
+  background: var(--panel-white);
+  border-radius: 20px;
+  box-shadow: 0 40px 80px -30px rgba(30, 25, 10, 0.22);
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  overflow: hidden;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--panel-white);
+  border-radius: 20px;
+  box-shadow: 0 40px 80px -30px rgba(30, 25, 10, 0.22);
+  padding: 40px 34px;
+}
+
+/* ---------- Left: photo panel ---------- */
+.illustration-panel {
+  position: relative;
+  background: #1a1409;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+  min-height: 480px;
+}
+
+.illu-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 60% 40%;
+  filter: saturate(1.04) contrast(1.02);
+  opacity: 0;
+  transition: opacity 1.1s ease;
+}
+.illu-photo.is-active { opacity: 1; }
+
+.illu-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.illu-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(0deg, rgba(20,14,4,0.82) 0%, rgba(20,14,4,0.15) 38%, rgba(20,14,4,0.05) 60%, rgba(20,14,4,0.28) 100%),
+    linear-gradient(100deg, rgba(20,14,4,0.35) 0%, transparent 32%);
+  pointer-events: none;
+}
+
+.pledge-stamp {
+  position: absolute;
+  top: 28px;
+  left: 28px;
+  width: 92px;
+  height: 92px;
+  color: var(--brass-bright);
+  opacity: 0.92;
+  transform: rotate(-8deg);
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.35));
+  z-index: 2;
+}
+.pledge-stamp svg { width: 100%; height: 100%; }
+
+.illu-caption {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  padding: 0 28px 20px;
+  font-family: 'Fraunces', serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #f7ecd4;
+  text-align: left;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.4);
+}
+
+.illu-credit {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  padding: 0 28px 20px;
+  font-size: 10.5px;
+  color: rgba(247,236,212,0.55);
+  text-align: left;
+}
+
+.illu-dots {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 6px;
+  padding: 0 28px 10px;
+}
+.illu-dots button {
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+  border: none;
+  background: rgba(247,236,212,0.35);
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+.illu-dots button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--brass-bright);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+.illu-dots button.is-active::after {
+  animation: dotFill 5s linear forwards;
+}
+@keyframes dotFill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* ---------- Right: form panel ---------- */
+.form-panel {
+  padding: 44px 40px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card-heading { margin: 0 0 24px; }
+.card-heading h1 {
+  font-family: 'Fraunces', serif;
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 6px;
+  color: var(--ink);
+}
+.card-heading p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+form { display: flex; flex-direction: column; gap: 17px; }
+
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 7px;
+}
+
+/* ---------- Inputs with leading icon ---------- */
+.input-icon-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.field-icon {
+  position: absolute;
+  left: 13px;
+  width: 16px;
+  height: 16px;
+  color: var(--brass-dim);
+  pointer-events: none;
+}
+
+input[type="email"],
+input[type="password"],
+input.pw-input,
+select#role {
+  width: 100%;
+  background: var(--field-bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  padding: 12px 14px 12px 40px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+input::placeholder { color: #a89f8a; }
+
+input:focus, select#role:focus {
+  outline: none;
+  border-color: var(--brass);
+  background: #fffdf8;
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+select#role {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  padding-right: 36px;
+  background-image:
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="%238c6e28" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+
+.input-icon-wrap input.pw-input { padding-right: 40px; }
+
+.toggle-visibility {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  border-radius: 6px;
+}
+.toggle-visibility:hover { color: var(--brass); }
+.toggle-visibility svg { width: 16px; height: 16px; }
+
+/* ---------- Submit button ---------- */
+.submit-btn {
+  margin-top: 6px;
+  background: linear-gradient(135deg, var(--brass-bright), var(--brass));
+  color: #241d0d;
+  border: none;
+  border-radius: var(--radius);
+  padding: 13px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.05s ease, box-shadow 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 10px 24px -8px rgba(200, 155, 60, 0.55);
+}
+.submit-btn:hover { filter: brightness(1.05); }
+.submit-btn:active { transform: translateY(1px); }
+.submit-btn:disabled { opacity: 0.6; cursor: not-allowed; filter: none; box-shadow: none; }
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(36,29,13,0.3);
+  border-top-color: #241d0d;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: none;
+}
+.submit-btn.loading .spinner { display: inline-block; }
+.submit-btn.loading .submit-label { opacity: 0.7; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- Error banner ---------- */
+.error-banner {
+  display: none;
+  align-items: flex-start;
+  gap: 8px;
+  background: var(--error-bg);
+  border: 1px solid #f2c6c0;
+  color: var(--error);
+  font-size: 12.5px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  line-height: 1.45;
+}
+.error-banner.visible { display: flex; }
+.error-banner svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; }
+
+/* ---------- Footer ---------- */
+.card-footer {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+.card-footer p { margin: 0; font-size: 11.5px; color: var(--muted); }
+
+.page-footer {
+  text-align: center;
+  margin-top: 22px;
+  font-size: 11px;
+  color: #a39a86;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner { animation: none; }
+  .illu-photo { transition: none; }
+  .illu-dots button::after { animation: none !important; }
+  * { transition: none !important; }
+}
+
+/* ---------- Responsive: stack on small screens ---------- */
+@media (max-width: 760px) {
+  .login-shell {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+  }
+  .illustration-panel { min-height: 220px; }
+  .pledge-stamp { width: 72px; height: 72px; top: 18px; left: 18px; }
+  .illu-caption { font-size: 14px; padding: 0 20px 4px; }
+  .illu-credit { padding: 0 20px 14px; }
+  .form-panel { padding: 32px 24px 28px; }
+}
+
+@media (max-width: 420px) {
+  .page { padding: 32px 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-blob blob-1" aria-hidden="true"></div>
+<div class="bg-blob blob-2" aria-hidden="true"></div>
+
+<main class="page">
+
+  <div class="brandline">
+    <span class="brandline-word">
+      <strong>Kabithu Gold Finance</strong>
+      <em>கபிது கோல்ட் ஃபைனான்ஸ்</em>
+    </span>
+  </div>
+
+  <div class="login-shell">
+
+    <!-- ---------- Left: photo panel ---------- -->
+    <div class="illustration-panel">
+      <div class="illu-slideshow" id="illuSlideshow">
+        <img
+          class="illu-photo is-active"
+          src="chain.png"
+          alt="Gold bangles, chains and rings laid out on the shop counter"
+          loading="eager"
+        >
+        <img
+          class="illu-photo"
+          src="pawn.png"
+          alt="Illustration of a jewelry balance scale, used to appraise pledged gold"
+          loading="lazy"
+        >
+        <img
+          class="illu-photo"
+          src="shop.png"
+          alt="Illustration of stacked gold bangles"
+          loading="lazy"
+        >
+      </div>
+      <div class="illu-grain" aria-hidden="true"></div>
+      <div class="illu-vignette" aria-hidden="true"></div>
+
+      <!-- brass pledge-stamp, the shop's mark on every ticket -->
+      <div class="pledge-stamp" aria-hidden="true">
+        <svg viewBox="0 0 140 140">
+          <defs>
+            <path id="stampCircle" d="M 70,70 m -54,0 a 54,54 0 1,1 108,0 a 54,54 0 1,1 -108,0"/>
+          </defs>
+          <circle cx="70" cy="70" r="66" fill="none" stroke="currentColor" stroke-width="1"/>
+          <circle cx="70" cy="70" r="54" fill="none" stroke="currentColor" stroke-width="1.4"/>
+          <circle cx="70" cy="70" r="40" fill="none" stroke="currentColor" stroke-width="0.8"/>
+          <text font-size="10.4" letter-spacing="2.6" fill="currentColor">
+            <textPath href="#stampCircle" startOffset="3%">KABITHU GOLD FINANCE &#9670; PAWN SHOP &#9670;</textPath>
+          </text>
+          <text x="70" y="66" text-anchor="middle" font-family="'Fraunces', serif" font-size="26" font-weight="600" fill="currentColor">க</text>
+          <text x="70" y="86" text-anchor="middle" font-family="'Inter', sans-serif" font-size="8" letter-spacing="1.5" fill="currentColor">EST. TRUST</text>
+        </svg>
+      </div>
+
+      <div class="illu-dots" id="illuDots" role="tablist" aria-label="Shop photo slideshow"></div>
+
+      <p class="illu-caption">Every item logged. Every loan tracked.</p>
+    </div>
+
+    <!-- ---------- Right: credentials panel ---------- -->
+    <div class="form-panel">
+      <div class="card-heading">
+        <h1>Welcome Back to Kabithu</h1>
+        <p>Your Trusted Gold & Finance Management Platform.</p>
+      </div>
+
+      <form id="loginForm" novalidate>
+
+        <div class="field">
+          <label for="role">Signing in as</label>
+          <div class="input-icon-wrap">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <select id="role" name="role" required>
+              <option value="" disabled selected>Select your role</option>
+              <option value="Manager">Manager</option>
+              <option value="Staff">Staff</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <div class="input-icon-wrap">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M4 4h16v16H4z" opacity="0"/>
+              <path d="M22 6c0-1.1-.9-2-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6z"/>
+              <path d="m22 6-10 7L2 6"/>
+            </svg>
+            <input type="email" id="email" name="email" placeholder="you@shop.com" autocomplete="username" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="input-icon-wrap">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="11" width="18" height="11" rx="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <input type="password" id="password" name="password" class="pw-input" placeholder="••••••••" autocomplete="current-password" required>
+            <button type="button" class="toggle-visibility" id="togglePw" aria-label="Show password">
+              <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="error-banner" id="errorBanner" role="alert">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span id="errorText">Something went wrong.</span>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <span class="spinner"></span>
+          <span class="submit-label">Sign In</span>
+        </button>
+
+      </form>
+
+      <div class="card-footer">
+        <p>Need access? Contact your shop manager.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="page-footer">&copy; 2026 Kabithu Gold Finance. All Rights Reserved.</p>
+</main>
+
+<script>
+/* ---------- Slideshow (previously missing slideshow.js) ---------- */
+(function () {
+  const photos = document.querySelectorAll('.illu-photo');
+  const dotsWrap = document.getElementById('illuDots');
+  if (!photos.length || !dotsWrap) return;
+
+  let active = 0;
+  const intervalMs = 5000;
+  let timer = null;
+
+  photos.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.setAttribute('role', 'tab');
+    dot.setAttribute('aria-label', 'Show photo ' + (i + 1));
+    if (i === 0) dot.classList.add('is-active');
+    dot.addEventListener('click', () => goTo(i));
+    dotsWrap.appendChild(dot);
+  });
+
+  const dots = dotsWrap.querySelectorAll('button');
+
+  function goTo(index) {
+    photos[active].classList.remove('is-active');
+    dots[active].classList.remove('is-active');
+    active = index;
+    photos[active].classList.add('is-active');
+    dots[active].classList.add('is-active');
+    restart();
+  }
+
+  function next() {
+    goTo((active + 1) % photos.length);
+  }
+
+  function restart() {
+    if (timer) clearInterval(timer);
+    timer = setInterval(next, intervalMs);
+  }
+
+  restart();
+})();
+
+/* ---------- Login form logic ---------- */
+const form = document.getElementById('loginForm');
+const submitBtn = document.getElementById('submitBtn');
+const errorBanner = document.getElementById('errorBanner');
+const errorText = document.getElementById('errorText');
+const togglePw = document.getElementById('togglePw');
+const passwordInput = document.getElementById('password');
+const eyeIcon = document.getElementById('eyeIcon');
+
+function showError(message) {
+  errorText.textContent = message;
+  errorBanner.classList.add('visible');
+}
+
+function hideError() {
+  errorBanner.classList.remove('visible');
+}
+
+togglePw.addEventListener('click', () => {
+  const isPassword = passwordInput.type === 'password';
+  passwordInput.type = isPassword ? 'text' : 'password';
+  togglePw.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+  eyeIcon.style.opacity = isPassword ? '0.6' : '1';
+});
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  hideError();
+
+  const role = document.getElementById('role').value;
+  const email = document.getElementById('email').value.trim();
+  const password = passwordInput.value;
+
+  if (!role) return showError('Please select whether you are signing in as Manager or Staff.');
+  if (!email || !password) return showError('Please enter both your email and password.');
+
+  submitBtn.classList.add('loading');
+  submitBtn.disabled = true;
+
+  try {
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role, email, password })
+    });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error(data.message || 'Invalid email or password.');
+    }
+
+    const data = await response.json();
+    localStorage.setItem('kabithuu_token', data.token);
+    localStorage.setItem('kabithuu_user', JSON.stringify(data.user));
+    window.location.href = 'dashboard.html';
+  } catch (err) {
+    showError(err.message || 'Something went wrong. Please try again.');
+  } finally {
+    submitBtn.classList.remove('loading');
+    submitBtn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

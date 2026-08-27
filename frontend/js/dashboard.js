@@ -23,7 +23,7 @@
   }
   function endSession(message) {
     clearSession();
-    window.location.href = '/'; + (message ? ('?msg=' + encodeURIComponent(message)) : '');
+    window.location.href = 'index.html' + (message ? ('?msg=' + encodeURIComponent(message)) : '');
   }
 
   if (TOKEN && SESSION) {
@@ -117,7 +117,7 @@
   }
 
   if (!TOKEN || !SESSION) {
-    window.location.href = '/';
+    window.location.href = 'index.html';
     return;
   }
 
@@ -208,10 +208,6 @@
       <div id="topbar">
         <div class="topbar-brand">
           <button class="btn btn-sm" id="hamburger" aria-label="Menu">&#9776;</button>
-          <svg class="badge-mark" viewBox="0 0 44 44" aria-hidden="true">
-            <circle cx="22" cy="22" r="20" fill="none" stroke="#c89b3c" stroke-width="1.3"/>
-            <text x="22" y="29" text-anchor="middle" font-family="'Fraunces', serif" font-size="18" font-weight="600" fill="#c89b3c">&#2965;</text>
-          </svg>
           <strong>Kabithu Gold Finance</strong>
         </div>
         <div class="topbar-right">
@@ -311,8 +307,7 @@
     ];
     return `
     <div class="dashboard-hero">
-      <img src="shop-counter.jpg" alt="Kabithuu shop counter">
-      <div class="dashboard-hero-overlay"><span>Kabithu Gold Finance</span></div>
+      <img src="banner_kabithu.png?v=2" alt="Kabithu Gold Finance banner">
     </div>
     <div class="toprow"><h2>${tr("Today's business")}</h2><span class="muted">${new Date(s.date).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span></div>
     <div class="grid grid-4" style="margin-bottom:20px">
